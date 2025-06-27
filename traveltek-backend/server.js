@@ -9,6 +9,8 @@ app.use(bodyParser.json());
 
 app.post('/api/booking', async (req, res) => {
   try {
+    console.log('req.body: ', req.body);
+
     const { 
       allocation,
       ccard,
@@ -40,16 +42,14 @@ app.post('/api/booking', async (req, res) => {
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': 'YOUR_API_KEY_HERE'
-        },
+        }
       }
     );
-
-    console.log('traveltekResponse; ', traveltekResponse.data.errors);
 
     if (traveltekResponse.data.errors.length > 0) {
       return res.status(400).json({ 
         message: 'Booking failed', 
-        error: traveltekResponse.data 
+        error: traveltekResponse.data
       });
     }
     
@@ -58,21 +58,12 @@ app.post('/api/booking', async (req, res) => {
       data: traveltekResponse.data
     });
   } catch (error) {
-    if (error.response) {
-      console.error('Traveltek error:', error.response.data);
+    console.error('Traveltek error:', error);
      
-      res.status(500).json({ 
-        message: 'Booking failed', 
-        error: error.response.data 
-      });
-    } else {
-      console.error('Traveltek error:', error.message);
-
-      res.status(500).json({ 
-        message: 'Booking failed', 
-        error: error.message 
-      });
-    }
+    res.status(500).json({ 
+      message: 'Booking failed', 
+      error: error.response.data 
+    });
   }
 });
 
